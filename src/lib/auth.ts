@@ -5,7 +5,12 @@ import { admin, username } from "better-auth/plugins";
 
 import { db } from "@/db";
 import { requiredEnv } from "@/lib/env";
-import { authUser } from "@/db/schema";
+import {
+  authAccount,
+  authSession,
+  authUser,
+  authVerification,
+} from "@/db/schema";
 import { sql } from "drizzle-orm";
 
 export const auth = betterAuth({
@@ -41,6 +46,14 @@ export const auth = betterAuth({
   },
   database: drizzleAdapter(db, {
     provider: "sqlite",
+    // Better Auth expects schema keys like "user"/"session"/...; our Drizzle exports
+    // are named authUser/authSession/etc, so we map them explicitly.
+    schema: {
+      user: authUser,
+      session: authSession,
+      account: authAccount,
+      verification: authVerification,
+    },
   }),
   plugins: [
     admin(),

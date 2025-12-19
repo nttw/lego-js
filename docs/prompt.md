@@ -23,3 +23,12 @@ Users can share their lists by allowing other users to view them, by entering th
 # Methodology
 
 To document, write a `work.md` file where you plan and document your steps as TODO list, and after completing each step, mark it as DONE. If problems arise, document them as well and how you solved them. You can also put down ideas, questions or potential problems if perceive anything in your work when you take these instructions from what you are supplied as an agent. When you complete your work, write a summary to the `work.md`.
+
+# Ignore, personal notes not for LLMs in first run
+
+Notes for me for future what I should have specified and done differently:
+- use AGENTS.md, see https://agents.md/
+- use of pnpm
+- REQUIRE `git commit` in steps AND updates to `work.md`
+
+- no initial admin user login possible

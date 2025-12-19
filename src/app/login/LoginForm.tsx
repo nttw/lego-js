@@ -41,7 +41,7 @@ export function LoginForm() {
 
       <p className="text-xs opacity-70">
         If no users exist yet, the first successful sign-in creates the initial
-        admin.
+        admin (password must be at least 8 characters).
       </p>
     </form>
   );

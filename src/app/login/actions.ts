@@ -16,8 +16,29 @@ async function hasAnyUsers() {
   return (rows[0]?.count ?? 0) > 0;
 }
 
+async function getAuthErrorMessage(error: unknown): Promise<string> {
+  if (error instanceof Response) {
+    try {
+      const data = await error.json();
+      const msg = typeof data?.message === "string" ? data.message : "";
+      return msg || `Request failed (${error.status})`;
+    } catch {
+      return `Request failed (${error.status})`;
+    }
+  }
+
+  if (error && typeof error === "object" && "message" in error) {
+    const msg = (error as any).message;
+    if (typeof msg === "string" && msg.trim()) return msg;
+  }
+
+  return "Request failed.";
+}
+
 export async function loginAction(prevState: { error?: string } | undefined, formData: FormData) {
-  const username = String(formData.get("username") ?? "").trim();
+  const username = String(formData.get("username") ?? "")
+    .trim()
+    .toLowerCase();
   const password = String(formData.get("password") ?? "");
 
   if (!username || !password) {
@@ -46,8 +67,16 @@ export async function loginAction(prevState: { error?: string } | undefined, for
           headers: await headers(),
         });
         redirect("/dashboard");
-      } catch {
-        return { error: "Unable to create initial admin user." };
+      } catch (e) {
+        const message = await getAuthErrorMessage(e);
+
+        // Better Auth uses stable error codes; provide a clearer UX for the
+        // common bootstrap case (e.g. passwords shorter than the default min).
+        if (message.includes("PASSWORD_TOO_SHORT")) {
+          return { error: "Password is too short (min 8 characters)." };
+        }
+
+        return { error: `Unable to create initial admin user: ${message}` };
       }
     }
 
