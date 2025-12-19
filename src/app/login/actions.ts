@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { authUser } from "@/db/schema";
@@ -28,7 +28,7 @@ async function getAuthErrorMessage(error: unknown): Promise<string> {
   }
 
   if (error && typeof error === "object" && "message" in error) {
-    const msg = (error as any).message;
+    const msg = (error as { message?: unknown }).message;
     if (typeof msg === "string" && msg.trim()) return msg;
   }
 

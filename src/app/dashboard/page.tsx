@@ -34,7 +34,7 @@ export default async function DashboardPage() {
 
         <Link
           href="/sets/search"
-          className="rounded-md border border-black/10 px-3 py-2 text-sm dark:border-white/15"
+          className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
         >
           Search sets
         </Link>
@@ -47,11 +47,11 @@ export default async function DashboardPage() {
           <input
             name="name"
             placeholder="New list name"
-            className="w-full max-w-sm rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm dark:border-white/15"
+            className="w-full max-w-sm rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm dark:border-white/15"
           />
           <button
             type="submit"
-            className="rounded-md bg-black px-3 py-2 text-sm text-white dark:bg-white dark:text-black"
+            className="rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
           >
             Create
           </button>
@@ -65,7 +65,7 @@ export default async function DashboardPage() {
               <li key={l.id}>
                 <Link
                   href={`/lists/${l.id}`}
-                  className="block rounded-md border border-black/10 px-3 py-2 hover:underline dark:border-white/15"
+                  className="block rounded-md border border-black/20 px-3 py-2 hover:underline dark:border-white/15"
                 >
                   {l.name}
                 </Link>
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
               <li key={l.id}>
                 <Link
                   href={`/lists/${l.id}`}
-                  className="block rounded-md border border-black/10 px-3 py-2 hover:underline dark:border-white/15"
+                  className="block rounded-md border border-black/20 px-3 py-2 hover:underline dark:border-white/15"
                 >
                   {l.name}
                 </Link>

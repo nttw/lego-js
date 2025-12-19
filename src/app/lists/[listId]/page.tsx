@@ -86,24 +86,24 @@ export default async function ListPage({
 
         <Link
           href="/sets/search"
-          className="rounded-md border border-black/10 px-3 py-2 text-sm dark:border-white/15"
+          className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
         >
           Add sets
         </Link>
       </div>
 
       {isOwner ? (
-        <section className="mt-6 rounded-md border border-black/10 p-4 dark:border-white/15">
+        <section className="mt-6 rounded-md border border-black/20 p-4 dark:border-white/15">
           <h2 className="text-sm font-semibold">Rename list</h2>
           <form action={renameListAction.bind(null, listId)} className="mt-2 flex gap-2">
             <input
               name="name"
               defaultValue={list.name}
-              className="w-full max-w-sm rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm dark:border-white/15"
+              className="w-full max-w-sm rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm dark:border-white/15"
             />
             <button
               type="submit"
-              className="rounded-md bg-black px-3 py-2 text-sm text-white dark:bg-white dark:text-black"
+              className="rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
             >
               Save
             </button>
@@ -120,7 +120,7 @@ export default async function ListPage({
             {sets.map((s) => (
               <li
                 key={s.setNum}
-                className="flex items-center justify-between gap-4 rounded-md border border-black/10 p-3 dark:border-white/15"
+                className="flex items-center justify-between gap-4 rounded-md border border-black/20 p-3 dark:border-white/15"
               >
                 <div className="flex items-center gap-3">
                   {s.imageUrl ? (
@@ -148,7 +148,7 @@ export default async function ListPage({
                   <form action={removeSetFromListAction.bind(null, listId, s.setNum)}>
                     <button
                       type="submit"
-                      className="rounded-md border border-black/10 px-3 py-1 text-sm dark:border-white/15"
+                      className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
                     >
                       Remove
                     </button>
@@ -168,11 +168,11 @@ export default async function ListPage({
             <input
               name="username"
               placeholder="Username to share with"
-              className="w-full max-w-sm rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm dark:border-white/15"
+              className="w-full max-w-sm rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm dark:border-white/15"
             />
             <button
               type="submit"
-              className="rounded-md bg-black px-3 py-2 text-sm text-white dark:bg-white dark:text-black"
+              className="rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
             >
               Add viewer
             </button>
@@ -185,7 +185,7 @@ export default async function ListPage({
               {viewers.map((v) => (
                 <li
                   key={v.id}
-                  className="flex items-center justify-between rounded-md border border-black/10 px-3 py-2 dark:border-white/15"
+                  className="flex items-center justify-between rounded-md border border-black/20 px-3 py-2 dark:border-white/15"
                 >
                   <div>
                     <div className="text-sm font-medium">{v.username ?? v.name}</div>
@@ -194,7 +194,7 @@ export default async function ListPage({
                   <form action={removeViewerAction.bind(null, listId, v.id)}>
                     <button
                       type="submit"
-                      className="rounded-md border border-black/10 px-3 py-1 text-sm dark:border-white/15"
+                      className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
                     >
                       Remove
                     </button>

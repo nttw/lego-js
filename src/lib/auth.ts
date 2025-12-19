@@ -33,11 +33,12 @@ export const auth = betterAuth({
             .select({ count: sql<number>`count(*)` })
             .from(authUser);
           const isFirstUser = (rows[0]?.count ?? 0) === 0;
+          const requestedRole = (user as unknown as { role?: string }).role;
 
           return {
             data: {
               ...user,
-              role: isFirstUser ? "admin" : (user as any).role ?? "user",
+              role: isFirstUser ? "admin" : requestedRole ?? "user",
             },
           };
         },

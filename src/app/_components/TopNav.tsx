@@ -10,7 +10,7 @@ export async function TopNav() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   return (
-    <header className="border-b border-black/10 px-4 py-3 dark:border-white/10">
+    <header className="border-b border-black/20 px-4 py-3 dark:border-white/10">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
         <div className="flex items-center gap-4">
           <Link href={session ? "/dashboard" : "/"} className="font-semibold">
@@ -39,7 +39,7 @@ export async function TopNav() {
             <form action={signOutAction}>
               <button
                 type="submit"
-                className="rounded-md border border-black/10 px-3 py-1 text-sm dark:border-white/15"
+                className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
               >
                 Sign out
               </button>

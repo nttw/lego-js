@@ -50,11 +50,11 @@ export default async function SearchSetsPage({
           name="q"
           defaultValue={query}
           placeholder="e.g. 42115 or Lambo"
-          className="w-full max-w-xl rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm dark:border-white/15"
+          className="w-full max-w-xl rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm dark:border-white/15"
         />
         <button
           type="submit"
-          className="rounded-md bg-black px-3 py-2 text-sm text-white dark:bg-white dark:text-black"
+          className="rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
         >
           Search
         </button>
@@ -77,7 +77,7 @@ export default async function SearchSetsPage({
               {results.data.map((s) => (
                 <li
                   key={s.set_num}
-                  className="rounded-md border border-black/10 p-3 dark:border-white/15"
+                  className="rounded-md border border-black/20 p-3 dark:border-white/15"
                 >
                   <div className="flex items-start gap-3">
                     {s.set_img_url ? (
@@ -123,7 +123,7 @@ export default async function SearchSetsPage({
 
                           <button
                             type="submit"
-                            className="mt-3 rounded-md border border-black/10 px-3 py-1 text-sm dark:border-white/15"
+                            className="mt-3 rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
                           >
                             Add to selected lists
                           </button>

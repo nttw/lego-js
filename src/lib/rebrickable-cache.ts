@@ -10,7 +10,7 @@ export async function searchAndCacheSets(query: string): Promise<RebrickableSet[
     search: query,
     ordering: "name",
     pageSize: 20,
-  } as any);
+  });
 
   const now = new Date();
   const results = (response?.results ?? []) as RebrickableSet[];
@@ -18,7 +18,7 @@ export async function searchAndCacheSets(query: string): Promise<RebrickableSet[
   if (results.length === 0) return [];
 
   const cacheable = results.filter(
-    (s) => typeof s.set_num === "string" && !!s.name && typeof (s as any).year === "number",
+    (s) => typeof s.set_num === "string" && !!s.name && typeof s.year === "number",
   ) as Array<RebrickableSet & { year: number }>;
 
   if (cacheable.length === 0) return results;
@@ -29,8 +29,8 @@ export async function searchAndCacheSets(query: string): Promise<RebrickableSet[
       cacheable.map((s) => ({
         setNum: s.set_num,
         name: s.name,
-          year: typeof (s as any).year === "number" ? (s as any).year : 0,
-          imageUrl: (s as any).set_img_url ?? null,
+        year: s.year,
+        imageUrl: s.set_img_url || null,
         lastFetchedAt: now,
         rawJson: JSON.stringify(s),
       })),

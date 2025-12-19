@@ -13,7 +13,7 @@ export function LoginForm() {
         <input
           name="username"
           autoComplete="username"
-          className="rounded-md border border-black/10 bg-transparent px-3 py-2 dark:border-white/15"
+          className="rounded-md border border-black/20 bg-transparent px-3 py-2 dark:border-white/15"
         />
       </label>
 
@@ -23,7 +23,7 @@ export function LoginForm() {
           type="password"
           name="password"
           autoComplete="current-password"
-          className="rounded-md border border-black/10 bg-transparent px-3 py-2 dark:border-white/15"
+          className="rounded-md border border-black/20 bg-transparent px-3 py-2 dark:border-white/15"
         />
       </label>
 
@@ -34,14 +34,14 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-black px-3 py-2 text-sm text-white disabled:opacity-60 dark:bg-white dark:text-black"
+        className="rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 disabled:opacity-60 dark:border-white/15 dark:hover:bg-white/10"
       >
         {pending ? "Signing in…" : "Sign in"}
       </button>
 
       <p className="text-xs opacity-70">
-        If no users exist yet, the first successful sign-in creates the initial
-        admin (password must be at least 8 characters).
+        If no users exist yet, the first successful sign-in creates the initial admin
+        (password must be at least 8 characters).
       </p>
     </form>
   );

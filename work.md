@@ -30,3 +30,21 @@
 ## Summary
 
 This app now supports username/password login (Better Auth), dark mode, list creation, list sharing (view-only for viewers), searching sets via Rebrickable with DB caching, and admin user management.
+
+---
+
+# Work log #2
+
+## TODO
+- [x] Add `pnpm clean` (cross-platform) to remove build artifacts/deps
+- [x] Switch docs/scripts to pnpm
+- [x] Fix dark mode toggle (theme actually switches)
+- [x] Replace toggle text with icon (sun/moon)
+- [x] Make role dropdown readable in dark mode
+
+## Progress
+
+- DONE: Removed CSS `prefers-color-scheme: dark` variable override so the `.dark` class fully controls theme variables.
+- DONE: Updated theme toggle to render sun/moon icons while keeping the same localStorage + `html.dark` approach.
+- DONE: Updated admin role `<select>` styling to use `bg-background`/`text-foreground` for readability in both themes.
+- DONE: Added `pnpm clean` using `rimraf` and updated README to use pnpm.
