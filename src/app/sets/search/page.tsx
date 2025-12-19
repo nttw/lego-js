@@ -18,11 +18,11 @@ export default async function SearchSetsPage({
   const { q } = await searchParams;
   const query = (q ?? "").trim();
 
-  const lists = await db
+  const lists = (await db
     .select({ id: legoList.id, name: legoList.name })
     .from(legoList)
     .where(eq(legoList.ownerUserId, session.user.id))
-    .orderBy(legoList.name);
+    .orderBy(legoList.name)) as Array<{ id: string; name: string }>;
 
   const results = query
     ? await safeSearch(query)

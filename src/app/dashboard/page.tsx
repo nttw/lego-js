@@ -9,18 +9,18 @@ import { createListAction } from "@/app/dashboard/actions";
 export default async function DashboardPage() {
   const session = await requireSession();
 
-  const ownedLists = await db
+  const ownedLists = (await db
     .select({ id: legoList.id, name: legoList.name })
     .from(legoList)
     .where(eq(legoList.ownerUserId, session.user.id))
-    .orderBy(legoList.name);
+    .orderBy(legoList.name)) as Array<{ id: string; name: string }>;
 
-  const sharedLists = await db
+  const sharedLists = (await db
     .select({ id: legoList.id, name: legoList.name, ownerUserId: legoList.ownerUserId })
     .from(legoListViewer)
     .innerJoin(legoList, eq(legoListViewer.listId, legoList.id))
     .where(eq(legoListViewer.viewerUserId, session.user.id))
-    .orderBy(legoList.name);
+    .orderBy(legoList.name)) as Array<{ id: string; name: string; ownerUserId: string }>;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">

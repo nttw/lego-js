@@ -1,5 +1,75 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Database (SQLite / Postgres)
+
+This app supports **two** database backends via Drizzle:
+
+- **Postgres** when `PG_DATABASE_URL` is set
+- **SQLite** otherwise (using `DATABASE_URL`, defaulting to `file:./data/lego.sqlite`)
+
+Backend selection is centralized in [src/db/runtime.ts](src/db/runtime.ts). During `next build`, the app forces an in-memory SQLite database to avoid build-time DB connectivity issues.
+
+### Environment variables
+
+- `PG_DATABASE_URL` (preferred when set): standard Postgres connection string, e.g. `postgres://user:pass@host:5432/dbname`
+- `DATABASE_URL` (SQLite): `file:./data/lego.sqlite`
+
+Optional override:
+
+- `DB_DIALECT`: force the backend selection when both URLs are present (or to force one backend).
+	- Set to `PG` to use `PG_DATABASE_URL`
+	- Set to `SQLITE` to use `DATABASE_URL` (or the default sqlite file if unset)
+
+If `DB_DIALECT` is **not** set and both URLs are present, the app defaults to **Postgres** (because `PG_DATABASE_URL` is set).
+
+### Drizzle schema + migrations for both backends
+
+Drizzle uses **dialect-specific schema builders**, so we keep:
+
+- SQLite schema in [src/db/schema/auth.ts](src/db/schema/auth.ts) and [src/db/schema/app.ts](src/db/schema/app.ts)
+- Postgres schema in [src/db/schema/pg](src/db/schema/pg)
+
+Migrations/snapshots must also be dialect-specific:
+
+- SQLite migrations live in [drizzle](drizzle) (existing)
+- Postgres migrations live in [drizzle/pg](drizzle/pg)
+
+`drizzle-kit` picks which schema/out folder to use based on whether `PG_DATABASE_URL` is set (see [drizzle.config.ts](drizzle.config.ts)). This also keeps separate `drizzle/meta` snapshots per dialect (SQLite: `drizzle/meta`, Postgres: `drizzle/pg/meta`).
+
+### Generating + running migrations
+
+SQLite (default):
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
+
+Postgres:
+
+```bash
+set PG_DATABASE_URL=postgres://USER:PASSWORD@HOST:5432/DBNAME
+pnpm db:generate
+pnpm db:migrate
+```
+
+On PowerShell:
+
+```powershell
+$env:PG_DATABASE_URL='postgres://USER:PASSWORD@HOST:5432/DBNAME'
+pnpm db:generate
+pnpm db:migrate
+```
+
+### Troubleshooting
+
+- If you see Postgres errors like `relation "session" does not exist`, it means the app is using Postgres (because `PG_DATABASE_URL`/`DB_DIALECT=PG` is set) but the Postgres database is still empty.
+	- Ensure `PG_DATABASE_URL` points at the same database your app is using.
+	- Run `pnpm db:generate` and `pnpm db:migrate` with `PG_DATABASE_URL` set (and optionally `DB_DIALECT=PG` if you also have `DATABASE_URL` set).
+	- Note: SQLite migrations in [drizzle](drizzle) do not apply to Postgres; Postgres uses its own migration folder [drizzle/pg](drizzle/pg).
+
+- The app does **not** automatically create tables on first boot. New databases (SQLite file or a fresh Postgres DB) must be initialized via `pnpm db:migrate`.
+
 ## Getting Started
 
 This repo uses `pnpm`.

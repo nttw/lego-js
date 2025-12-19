@@ -4,6 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, username } from "better-auth/plugins";
 
 import { db } from "@/db";
+import { dbDialect } from "@/db";
 import { requiredEnv } from "@/lib/env";
 import {
   authAccount,
@@ -46,7 +47,7 @@ export const auth = betterAuth({
     },
   },
   database: drizzleAdapter(db, {
-    provider: "sqlite",
+    provider: dbDialect === "pg" ? "pg" : "sqlite",
     // Better Auth expects schema keys like "user"/"session"/...; our Drizzle exports
     // are named authUser/authSession/etc, so we map them explicitly.
     schema: {

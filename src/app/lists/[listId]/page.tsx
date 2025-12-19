@@ -27,11 +27,11 @@ export default async function ListPage({
   const session = await requireSession();
   const { listId } = await params;
 
-  const listRows = await db
+  const listRows = (await db
     .select({ id: legoList.id, name: legoList.name, ownerUserId: legoList.ownerUserId })
     .from(legoList)
     .where(eq(legoList.id, listId))
-    .limit(1);
+    .limit(1)) as Array<{ id: string; name: string; ownerUserId: string }>;
 
   const list = listRows[0];
   if (!list) notFound();
@@ -39,16 +39,16 @@ export default async function ListPage({
   const isOwner = list.ownerUserId === session.user.id;
 
   if (!isOwner) {
-    const viewer = await db
+    const viewer = (await db
       .select({ listId: legoListViewer.listId })
       .from(legoListViewer)
       .where(and(eq(legoListViewer.listId, listId), eq(legoListViewer.viewerUserId, session.user.id)))
-      .limit(1);
+      .limit(1)) as Array<{ listId: string }>;
 
     if (!viewer[0]) notFound();
   }
 
-  const sets = await db
+  const sets = (await db
     .select({
       setNum: legoListSet.setNum,
       name: rebrickableSet.name,
@@ -58,15 +58,20 @@ export default async function ListPage({
     .from(legoListSet)
     .leftJoin(rebrickableSet, eq(legoListSet.setNum, rebrickableSet.setNum))
     .where(eq(legoListSet.listId, listId))
-    .orderBy(legoListSet.addedAt);
+    .orderBy(legoListSet.addedAt)) as Array<{
+    setNum: string;
+    name: string | null;
+    year: number | null;
+    imageUrl: string | null;
+  }>;
 
   const viewers = isOwner
-    ? await db
+    ? ((await db
         .select({ id: authUser.id, username: authUser.username, name: authUser.name })
         .from(legoListViewer)
         .innerJoin(authUser, eq(legoListViewer.viewerUserId, authUser.id))
         .where(eq(legoListViewer.listId, listId))
-        .orderBy(authUser.username)
+        .orderBy(authUser.username)) as Array<{ id: string; username: string | null; name: string }>)
     : [];
 
   return (

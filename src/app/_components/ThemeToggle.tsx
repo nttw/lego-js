@@ -55,25 +55,41 @@ function MoonIcon() {
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "light";
-
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark" || stored === "light") return stored;
-
-    const prefersDark =
-      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? "dark" : "light";
-  });
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
+    // Keep the first client render identical to the server render.
+    // Resolve the actual theme only after mount.
+    setMounted(true);
+
+    try {
+      const stored = localStorage.getItem("theme");
+      if (stored === "dark" || stored === "light") {
+        setTheme(stored);
+        applyTheme(stored);
+        return;
+      }
+
+      const prefersDark =
+        window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const resolved: Theme = prefersDark ? "dark" : "light";
+      setTheme(resolved);
+      applyTheme(resolved);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     try {
       localStorage.setItem("theme", theme);
     } catch {
       // ignore
     }
     applyTheme(theme);
-  }, [theme]);
+  }, [mounted, theme]);
 
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
@@ -87,9 +103,15 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-black/20 text-sm text-foreground dark:border-white/15"
-      aria-label={shownTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={
+        mounted
+          ? shownTheme === "dark"
+            ? "Switch to light mode"
+            : "Switch to dark mode"
+          : "Toggle theme"
+      }
     >
-      {shownTheme === "dark" ? <MoonIcon /> : <SunIcon />}
+      {mounted ? (shownTheme === "dark" ? <MoonIcon /> : <SunIcon />) : null}
     </button>
   );
 }

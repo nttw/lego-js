@@ -17,10 +17,10 @@ export async function addSetToListsAction(formData: FormData) {
     redirect(q ? `/sets/search?q=${encodeURIComponent(q)}` : "/sets/search");
   }
 
-  const owned = await db
+  const owned = (await db
     .select({ id: legoList.id })
     .from(legoList)
-    .where(and(eq(legoList.ownerUserId, session.user.id), inArray(legoList.id, listIds)));
+    .where(and(eq(legoList.ownerUserId, session.user.id), inArray(legoList.id, listIds)))) as Array<{ id: string }>;
 
   const ownedIds = new Set(owned.map((l) => l.id));
 
