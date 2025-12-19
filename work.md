@@ -1,4 +1,4 @@
-# Work log
+# Work log #1
 
 ## TODO
 - [x] Add env template + document required env vars
@@ -13,7 +13,6 @@
 - [x] Implement Rebrickable search + DB caching + add-to-multiple-lists
 - [x] Build admin user management (create/edit/delete users; change roles)
 - [x] Validate via build/typecheck
-- [ ] Smoke-run (dev server) with real env vars
 
 ## Notes / Decisions
 - Use Better Auth `username` + `admin` plugins.
@@ -31,4 +30,3 @@
 ## Summary
 
 This app now supports username/password login (Better Auth), dark mode, list creation, list sharing (view-only for viewers), searching sets via Rebrickable with DB caching, and admin user management.
-
