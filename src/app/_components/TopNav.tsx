@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { signOutAction } from "@/app/actions/auth";
+import { buttonSm } from "@/app/_components/buttonStyles";
 import { ThemeToggle } from "@/app/_components/ThemeToggle";
 import { auth } from "@/lib/auth";
 import { isAdminRole } from "@/lib/roles";
@@ -39,7 +40,7 @@ export async function TopNav() {
             <form action={signOutAction}>
               <button
                 type="submit"
-                className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
+                className={buttonSm}
               >
                 Sign out
               </button>

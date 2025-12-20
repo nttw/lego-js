@@ -2,6 +2,8 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
+import { iconButton } from "@/app/_components/buttonStyles";
+
 type Theme = "light" | "dark";
 
 function applyTheme(theme: Theme) {
@@ -122,7 +124,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-black/20 text-sm text-foreground dark:border-white/15"
+      className={iconButton}
       aria-label={shownTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
       {shownTheme === "dark" ? <MoonIcon /> : <SunIcon />}

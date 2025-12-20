@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
+import { buttonMd, buttonSm } from "@/app/_components/buttonStyles";
 import {
   createUserAction,
   deleteUserAction,
@@ -84,7 +85,7 @@ export default async function AdminUsersPage() {
           </select>
           <button
             type="submit"
-            className="sm:col-span-4 rounded-md border border-black/20 bg-transparent px-3 py-2 text-sm text-foreground hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+            className={`sm:col-span-4 ${buttonMd}`}
           >
             Create
           </button>
@@ -111,7 +112,7 @@ export default async function AdminUsersPage() {
                 <form action={deleteUserAction.bind(null, u.id)}>
                   <button
                     type="submit"
-                    className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
+                    className={buttonSm}
                   >
                     Delete
                   </button>
@@ -127,7 +128,7 @@ export default async function AdminUsersPage() {
                   />
                   <button
                     type="submit"
-                    className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
+                    className={buttonMd}
                   >
                     Save
                   </button>
@@ -148,7 +149,7 @@ export default async function AdminUsersPage() {
                   </select>
                   <button
                     type="submit"
-                    className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
+                    className={buttonMd}
                   >
                     Set
                   </button>
@@ -163,7 +164,7 @@ export default async function AdminUsersPage() {
                   />
                   <button
                     type="submit"
-                    className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
+                    className={buttonMd}
                   >
                     Set
                   </button>

@@ -18,6 +18,7 @@ import {
   removeViewerAction,
   renameListAction,
 } from "@/app/lists/[listId]/actions";
+import { buttonMd } from "@/app/_components/buttonStyles";
 
 export default async function ListPage({
   params,
@@ -91,7 +92,7 @@ export default async function ListPage({
 
         <Link
           href="/sets/search"
-          className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
+          className={buttonMd}
         >
           Add sets
         </Link>

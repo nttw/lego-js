@@ -5,6 +5,7 @@ import { legoList, legoListViewer } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { eq } from "drizzle-orm";
 import { createListAction } from "@/app/dashboard/actions";
+import { buttonMd } from "@/app/_components/buttonStyles";
 
 export default async function DashboardPage() {
   const session = await requireSession();
@@ -34,7 +35,7 @@ export default async function DashboardPage() {
 
         <Link
           href="/sets/search"
-          className="rounded-md border border-black/20 px-3 py-2 text-sm dark:border-white/15"
+          className={buttonMd}
         >
           Search sets
         </Link>
