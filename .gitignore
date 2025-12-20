@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# these files below use dotenvx to encrypt secrets
+!.env.prod
+!.env.dev
+# local env files
+.env*.local
 
 # local sqlite db (development data)
 /data/*.sqlite
@@ -45,3 +50,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secrets
+.env.keys
