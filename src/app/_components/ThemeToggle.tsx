@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 type Theme = "light" | "dark";
 
@@ -8,6 +8,45 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement;
   if (theme === "dark") root.classList.add("dark");
   else root.classList.remove("dark");
+}
+
+function resolveThemeSnapshot(): Theme {
+  if (typeof window === "undefined") return "light";
+
+  try {
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark" || stored === "light") return stored;
+  } catch {
+    // ignore
+  }
+
+  // If a theme init script already ran, prefer the current document state.
+  try {
+    if (document.documentElement.classList.contains("dark")) return "dark";
+  } catch {
+    // ignore
+  }
+
+  const prefersDark =
+    window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+
+  const handler = () => onStoreChange();
+  window.addEventListener("storage", handler);
+  window.addEventListener("lego-theme", handler);
+
+  return () => {
+    window.removeEventListener("storage", handler);
+    window.removeEventListener("lego-theme", handler);
+  };
+}
+
+function useTheme(): Theme {
+  return useSyncExternalStore(subscribeTheme, resolveThemeSnapshot, () => "light");
 }
 
 function SunIcon() {
@@ -55,45 +94,26 @@ function MoonIcon() {
 }
 
 export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<Theme>("light");
+  const theme = useTheme();
 
   useEffect(() => {
-    // Keep the first client render identical to the server render.
-    // Resolve the actual theme only after mount.
-    setMounted(true);
-
-    try {
-      const stored = localStorage.getItem("theme");
-      if (stored === "dark" || stored === "light") {
-        setTheme(stored);
-        applyTheme(stored);
-        return;
-      }
-
-      const prefersDark =
-        window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const resolved: Theme = prefersDark ? "dark" : "light";
-      setTheme(resolved);
-      applyTheme(resolved);
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {
-      // ignore
-    }
     applyTheme(theme);
-  }, [mounted, theme]);
+  }, [theme]);
 
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // ignore
+    }
+    applyTheme(next);
+    // Notify same-tab subscribers (storage event only fires across documents).
+    try {
+      window.dispatchEvent(new Event("lego-theme"));
+    } catch {
+      // ignore
+    }
   }
 
   const shownTheme: Theme = theme;
@@ -103,15 +123,9 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-black/20 text-sm text-foreground dark:border-white/15"
-      aria-label={
-        mounted
-          ? shownTheme === "dark"
-            ? "Switch to light mode"
-            : "Switch to dark mode"
-          : "Toggle theme"
-      }
+      aria-label={shownTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {mounted ? (shownTheme === "dark" ? <MoonIcon /> : <SunIcon />) : null}
+      {shownTheme === "dark" ? <MoonIcon /> : <SunIcon />}
     </button>
   );
 }

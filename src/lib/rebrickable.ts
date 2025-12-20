@@ -1,10 +1,10 @@
 import { RebrickableApiClient, type Set } from "@brakbricks/rebrickable-api";
 
-import { requiredEnv } from "@/lib/env";
+import { getRequiredEnv } from "@/lib/env";
 
 export function rebrickableClient() {
   return new RebrickableApiClient(
-    requiredEnv("REBRICKABLE_API_KEY", {
+    getRequiredEnv("REBRICKABLE_API_KEY", {
       allowDuringBuild: true,
       buildFallback: "__BUILD_TIME_REBRICKABLE_KEY__",
     }),

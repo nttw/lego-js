@@ -1,5 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 import { getDbDialect } from "./src/db/runtime";
+import { getEnv, getRequiredEnv } from "./src/lib/env";
 
 const runtimeDialect = getDbDialect();
 
@@ -10,7 +11,7 @@ export default defineConfig({
   dbCredentials: {
     url:
       runtimeDialect === "pg"
-        ? (process.env.PG_DATABASE_URL as string)
-        : process.env.DATABASE_URL ?? "file:./data/lego.sqlite",
+        ? getRequiredEnv("PG_DATABASE_URL")
+        : getEnv("DATABASE_URL") ?? "file:./data/lego.sqlite",
   },
 });

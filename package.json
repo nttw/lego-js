@@ -4,12 +4,14 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "dotenvx run -- next dev",
-    "build": "dotenvx run -- next build",
-    "start": "dotenvx run -- next start",
+    "dev:local": "dotenvx run -f .env.dev -f .env.local --ignore=MISSING_ENV_FILE -- next dev --port 3000",
+    "dev": "dotenvx run -f .env.dev -f .env.local --ignore=MISSING_ENV_FILE -- next dev --port 3000",
+    "build": "dotenvx run -f .env.prod -f .env.prod.local --ignore=MISSING_ENV_FILE -- next build",
+    "start": "dotenvx run -f .env.prod --ignore=MISSING_ENV_FILE -- next start",
     "deploy": "pnpm dlx vercel@latest deploy --prod",
     "deploy:dotenvx": "pnpm dlx vercel@latest env add DOTENV_PRIVATE_KEY_PRODUCTION",
     "lint": "eslint",
+    "pretty": "prettier --write .",
     "clean": "rimraf node_modules .next dist",
     "db:generate": "dotenvx run -- drizzle-kit generate",
     "db:migrate": "dotenvx run -- drizzle-kit migrate"
@@ -37,6 +39,7 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
+    "prettier": "^3.7.4",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"

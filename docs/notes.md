@@ -15,4 +15,7 @@ pnpm dlx @dotenvx/dotenvx set HELLO "production (encrypted)" -f .env.prod
 pnpm dlx vercel@latest login
 ```
 
-"deploy:pull": "pnpm dlx vercel@latest env pull .env.production",
+dotenvx is similar to sops
+
+For pulling env from Vercel later:
+`"deploy:pull": "pnpm dlx vercel@latest env pull .env.production",`

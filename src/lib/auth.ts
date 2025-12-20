@@ -5,7 +5,7 @@ import { admin, username } from "better-auth/plugins";
 
 import { db } from "@/db";
 import { dbDialect } from "@/db";
-import { requiredEnv } from "@/lib/env";
+import { getRequiredEnv } from "@/lib/env";
 import {
   authAccount,
   authSession,
@@ -15,11 +15,11 @@ import {
 import { sql } from "drizzle-orm";
 
 export const auth = betterAuth({
-  secret: requiredEnv("BETTER_AUTH_SECRET", {
+  secret: getRequiredEnv("BETTER_AUTH_SECRET", {
     allowDuringBuild: true,
     buildFallback: "__BUILD_TIME_SECRET__0123456789012345678901234567__",
   }),
-  baseURL: requiredEnv("BETTER_AUTH_URL", {
+  baseURL: getRequiredEnv("BETTER_AUTH_URL", {
     allowDuringBuild: true,
     buildFallback: "http://localhost:3000",
   }),

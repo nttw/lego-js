@@ -35,7 +35,7 @@ yarn-error.log*
 # these files below use dotenvx to encrypt secrets
 !.env.prod
 !.env.dev
-# local env files
+# local env files, pattern may be currently redundant here
 .env*.local
 
 # local sqlite db (development data)
