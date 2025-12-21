@@ -19,3 +19,10 @@ These features are still in the planning stage and are not yet sanctioned for de
 
 - [x] Use dotenv to commit encrypted secrets to the repo, making it easier to deploy.
 - [x] Add justfile with common tasks like `just setup`, `just migrate`, `just dev`, `just build`, `just clean`, etc.
+
+---
+
+- [x] As alternative to sqlite, add support for Postgres as database backend, using environment variables to select which one to use. Consider how this is done best with Drizzle. Check that all code works with both backends and is fully implemented.
+- [x] For local development, add a docker-compose file that sets up a Postgres database for easy local testing
+	- Consider how the initial migration is done best, e.g. via an init script in the database container.
+- [x] Document initial setup and migrations. It is not needed to migrate from sqlite to Postgres, just document how to set up either one from scratch.

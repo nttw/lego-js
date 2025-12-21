@@ -45,12 +45,14 @@ export async function loginAction(prevState: { error?: string } | undefined, for
     return { error: "Username and password are required." };
   }
 
+  let authenticated = false;
+
   try {
     await auth.api.signInUsername({
       body: { username, password },
       headers: await headers(),
     });
-    redirect("/dashboard");
+    authenticated = true;
   } catch {
     // Bootstrap: if this is a fresh DB, allow the first login attempt to create
     // the first user. The auth config promotes the first user to admin.
@@ -66,7 +68,7 @@ export async function loginAction(prevState: { error?: string } | undefined, for
           },
           headers: await headers(),
         });
-        redirect("/dashboard");
+        authenticated = true;
       } catch (e) {
         const message = await getAuthErrorMessage(e);
 
@@ -78,8 +80,14 @@ export async function loginAction(prevState: { error?: string } | undefined, for
 
         return { error: `Unable to create initial admin user: ${message}` };
       }
+    } else {
+      return { error: "Invalid username or password." };
     }
+  }
 
-    return { error: "Invalid username or password." };
+  if (authenticated) {
+    // IMPORTANT: Next.js `redirect()` throws an internal NEXT_REDIRECT signal.
+    // Keeping it outside try/catch prevents it from being treated as an error.
+    redirect("/dashboard");
   }
 }

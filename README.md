@@ -68,7 +68,13 @@ pnpm db:migrate
 	- Run `pnpm db:generate` and `pnpm db:migrate` with `PG_DATABASE_URL` set (and optionally `DB_DIALECT=PG` if you also have `DATABASE_URL` set).
 	- Note: SQLite migrations in [drizzle](drizzle) do not apply to Postgres; Postgres uses its own migration folder [drizzle/pg](drizzle/pg).
 
-- The app does **not** automatically create tables on first boot. New databases (SQLite file or a fresh Postgres DB) must be initialized via `pnpm db:migrate`.
+- The app **does** automatically run the initial migration on first start **if the database is empty**.
+	- SQLite: if the SQLite file has no tables.
+	- Postgres: if the `public` schema has no tables.
+	- Migrations are applied from the dialect-specific folder (`drizzle` for SQLite, `drizzle/pg` for Postgres).
+	- During `next build`, migrations are skipped (the build phase forces an in-memory SQLite database).
+
+If you still want to run migrations manually (or are debugging migration issues), `pnpm db:migrate` remains supported.
 
 ## Getting Started
 

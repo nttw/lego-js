@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev:local": "dotenvx run -f .env.dev -f .env.local --ignore=MISSING_ENV_FILE -- next dev --port 3000",
+    "dev:local": "dotenvx run -f .env.dev -f .env.staging --overload --verbose --ignore=MISSING_ENV_FILE -- next dev --port 3000 --inspect",
     "dev": "dotenvx run -f .env.dev -f .env.local --ignore=MISSING_ENV_FILE -- next dev --port 3000",
     "build": "dotenvx run -f .env.prod -f .env.prod.local --ignore=MISSING_ENV_FILE -- next build",
     "start": "dotenvx run -f .env.prod --ignore=MISSING_ENV_FILE -- next start",
@@ -13,6 +13,8 @@
     "lint": "eslint",
     "pretty": "prettier --write .",
     "clean": "rimraf node_modules .next dist",
+    "db:generate:local": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit generate",
+    "db:migrate:local": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit migrate",
     "db:generate": "dotenvx run -- drizzle-kit generate",
     "db:migrate": "dotenvx run -- drizzle-kit migrate"
   },

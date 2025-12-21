@@ -19,3 +19,11 @@ dotenvx is similar to sops
 
 For pulling env from Vercel later:
 `"deploy:pull": "pnpm dlx vercel@latest env pull .env.production",`
+
+To connect to a local PostgreSQL database using `psql`:
+`psql -p 5432 -h localhost -U postgres`
+A docker compose file is included.
+
+To suppress TS warnings about `any` types in the database code, you can use:
+`// eslint-disable-next-line @typescript-eslint/no-explicit-any`
+but this should be used very sparingly.

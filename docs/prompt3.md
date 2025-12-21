@@ -1,9 +1,6 @@
 # Feature backlog
 
-- [x] As alternative to sqlite, add support for Postgres as database backend, using environment variables to select which one to use. Consider how this is done best with Drizzle. Check that all code works with both backends and is fully implemented.
-- [x] For local development, add a docker-compose file that sets up a Postgres database for easy local testing
-	- Consider how the initial migration is done best, e.g. via an init script in the database container.
-- [x] Document initial setup and migrations. It is not needed to migrate from sqlite to Postgres, just document how to set up either one from scratch.
+- We have a DB backend for both SQLite and Postgres. When deploying, it is cumbersome to have to manually run the initial migration. So it would be good to have the initial migration run automatically on first start if the database is empty. This can be tested locally with docker, so I have prepared a testing configuration with PG_DATABASE_URL=postgresql://postgresql:localhost:5432/postgres?sslmode=false so can test this when we implement this feature. As you can see, this is safe because it only connects to a local database and does not need a password, only user. It seems this action could best be done in createDb in db/index.ts, but you should make sure if this is the best place. There is a uncommented migrateDb function close which you could use as base. The createDb function is typed as any, which you may want to fix and then use the migrate function you find there. You need to use the directory for sqlite and postgres respectively, so this would work for both backends. Make sure to test both backends locally with docker for Postgres and the default sqlite file for sqlite. Document how this works in the README.md as needed.
 
 - [ ] Add a "Sets" page that shows all Lego sets the user has added to any of their lists, grouped by list.
 - [ ] For admins, add a page that shows all sets

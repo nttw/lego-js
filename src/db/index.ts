@@ -1,9 +1,13 @@
 import Database from "better-sqlite3";
 import type { Database as BetterSqliteDatabase } from "better-sqlite3";
+import fs from "node:fs";
+import path from "node:path";
 import { Pool } from "pg";
 
 import { drizzle as drizzleSqlite } from "drizzle-orm/better-sqlite3";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
+import { migrate as migrateSqlite } from "drizzle-orm/better-sqlite3/migrator";
+import { migrate as migratePg } from "drizzle-orm/node-postgres/migrator";
 
 import * as sqliteSchema from "./schema/sqlite";
 import * as pgSchema from "./schema/pg";
@@ -52,16 +56,74 @@ function getPgPool() {
   const globalForPg = globalThis as unknown as Record<typeof globalKey, Pool | undefined>;
 
   if (!globalForPg[globalKey]) {
+    console.log("Creating new Postgres pool");
     globalForPg[globalKey] = new Pool({
       connectionString: getPgDatabaseUrl(),
       max: 10,
     });
+    console.log("Created new Postgres pool: ", globalForPg[globalKey]);
   }
 
   return globalForPg[globalKey];
 }
 
-function createDb() {
+type SqliteDb = ReturnType<typeof drizzleSqlite<typeof sqliteSchema>>;
+type PgDb = ReturnType<typeof drizzlePg<typeof pgSchema>>;
+type DbInternal = SqliteDb | PgDb;
+
+function getMigrationsFolder(): string {
+  const rel = dbDialect === "pg" ? "drizzle/pg" : "drizzle";
+  return path.resolve(process.cwd(), rel);
+}
+
+async function isDbEmpty(): Promise<boolean> {
+  if (dbDialect === "pg") {
+    const pool = getPgPool();
+    const res = await pool.query(
+      "select tablename from pg_catalog.pg_tables where schemaname = 'public' limit 1;",
+    );
+    return res.rowCount === 0;
+  }
+
+  const sqlite = getSqliteDatabase();
+  const row = sqlite
+    .prepare(
+      "select name from sqlite_master where type = 'table' and name not like 'sqlite_%' limit 1;",
+    )
+    .get();
+  return !row;
+}
+
+async function migrateDbIfEmpty(db: DbInternal): Promise<void> {
+  if (isNextBuildPhase()) return;
+
+  const migrationsFolder = getMigrationsFolder();
+  if (!fs.existsSync(migrationsFolder)) {
+    throw new Error(
+      `Missing migrations folder at ${migrationsFolder}. Run \\"pnpm db:generate\\" for this dialect and commit the generated migrations.`,
+    );
+  }
+
+  let empty = false;
+  try {
+    empty = await isDbEmpty();
+  } catch {
+    // If we can't check emptiness reliably, do not auto-migrate.
+    // This avoids surprising writes when connectivity/permissions are unclear.
+    return;
+  }
+
+  if (!empty) return;
+
+  if (dbDialect === "pg") {
+    await migratePg(db as PgDb, { migrationsFolder });
+    return;
+  }
+
+  await migrateSqlite(db as SqliteDb, { migrationsFolder });
+}
+
+function createDbSync(): DbInternal {
   if (dbDialect === "pg") {
     const pool = getPgPool();
     return drizzlePg(pool, { schema: pgSchema });
@@ -71,9 +133,30 @@ function createDb() {
   return drizzleSqlite(sqlite, { schema: sqliteSchema });
 }
 
+async function getDbSingleton(): Promise<DbInternal> {
+  const globalKey = "__lego_db_singleton__" as const;
+  const globalForDb = globalThis as unknown as Record<typeof globalKey, Promise<Db> | undefined>;
+
+  if (!globalForDb[globalKey]) {
+    globalForDb[globalKey] = (async () => {
+      const created = createDbSync();
+      await migrateDbIfEmpty(created);
+      return created;
+    })();
+  }
+
+  return globalForDb[globalKey];
+}
+
 // Drizzle returns dialect-specific database types (SQLite vs Postgres) with
 // incompatible method generics. The app code doesn’t need those dialect-specific
 // typings, so we intentionally erase them to keep a single `db` import usable.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const db: any = createDb();
+export const db: any = await getDbSingleton();
 export type Db = typeof db;
+
+// Export for tests / scripts that want to trigger the same behavior.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function createDb(): Promise<any> {
+  return getDbSingleton();
+}
