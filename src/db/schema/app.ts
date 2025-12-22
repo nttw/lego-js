@@ -1,10 +1,17 @@
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const rebrickableSet = sqliteTable("rebrickable_set", {
   setNum: text("setNum").primaryKey().notNull(),
   name: text("name").notNull(),
   year: integer("year").notNull(),
   imageUrl: text("imageUrl"),
+  lastFetchedAt: integer("lastFetchedAt", { mode: "timestamp_ms" }).notNull(),
+  rawJson: text("rawJson"),
+});
+
+export const bricksetPriceCache = sqliteTable("brickset_price_cache", {
+  setNum: text("setNum").primaryKey().notNull(),
+  rrpEur: real("rrpEur"),
   lastFetchedAt: integer("lastFetchedAt", { mode: "timestamp_ms" }).notNull(),
   rawJson: text("rawJson"),
 });

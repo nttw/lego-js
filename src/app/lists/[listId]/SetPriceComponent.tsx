@@ -7,11 +7,21 @@ import { fetchSetRrpEurAction } from "@/app/lists/[listId]/actions";
 export function SetPriceComponent({
   listId,
   setNum,
+  initialRrpEur,
 }: {
   listId: string;
   setNum: string;
+  initialRrpEur?: number | null;
 }) {
-  const [priceText, setPriceText] = useState<string>("€—");
+  const [priceText, setPriceText] = useState<string>(() => {
+    if (typeof initialRrpEur === "number") {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "EUR",
+      }).format(initialRrpEur);
+    }
+    return "€—";
+  });
   const [isPending, startTransition] = useTransition();
 
   return (

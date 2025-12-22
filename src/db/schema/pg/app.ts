@@ -1,10 +1,17 @@
-import { integer, text, timestamp, uniqueIndex, pgTable } from "drizzle-orm/pg-core";
+import { doublePrecision, integer, text, timestamp, uniqueIndex, pgTable } from "drizzle-orm/pg-core";
 
 export const rebrickableSet = pgTable("rebrickable_set", {
   setNum: text("setNum").primaryKey().notNull(),
   name: text("name").notNull(),
   year: integer("year").notNull(),
   imageUrl: text("imageUrl"),
+  lastFetchedAt: timestamp("lastFetchedAt", { mode: "date" }).notNull(),
+  rawJson: text("rawJson"),
+});
+
+export const bricksetPriceCache = pgTable("brickset_price_cache", {
+  setNum: text("setNum").primaryKey().notNull(),
+  rrpEur: doublePrecision("rrpEur"),
   lastFetchedAt: timestamp("lastFetchedAt", { mode: "date" }).notNull(),
   rawJson: text("rawJson"),
 });

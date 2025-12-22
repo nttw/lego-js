@@ -9,14 +9,27 @@
     "build": "dotenvx run -f .env.prod -f .env.prod.local --ignore=MISSING_ENV_FILE -- next build",
     "start": "dotenvx run -f .env.prod --ignore=MISSING_ENV_FILE -- next start",
     "deploy": "pnpm dlx vercel@latest deploy --prod",
-    "deploy:dotenvx": "pnpm dlx vercel@latest env add DOTENV_PRIVATE_KEY_PRODUCTION",
+    "_deploy:dotenvx": "pnpm dlx vercel@latest env add DOTENV_PRIVATE_KEY_PRODUCTION",
     "lint": "eslint",
     "pretty": "prettier --write .",
     "clean": "rimraf node_modules .next dist",
-    "db:generate:local": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit generate",
-    "db:migrate:local": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit migrate",
-    "db:generate": "dotenvx run -- drizzle-kit generate",
-    "db:migrate": "dotenvx run -- drizzle-kit migrate"
+
+    "db:generate:sqlite": "dotenvx run -- drizzle-kit generate",
+    "db:migrate:sqlite": "dotenvx run -- drizzle-kit migrate",
+    "db:generate:pg": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit generate",
+    "db:migrate:pg": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit migrate",
+    "db:generate:neon": "dotenvx run -f .env.prod --overload --verbose -- drizzle-kit generate",
+    "db:migrate:neon": "dotenvx run -f .env.prod --overload --verbose -- drizzle-kit migrate",
+
+    "db:migrate": "node scripts/db-guard.mjs migrate",
+    "db:generate": "node scripts/db-guard.mjs generate",
+
+    "file:db:generate:sqlite": "node scripts/db-generate.mjs sqlite",
+    "file:db:migrate:sqlite": "node scripts/db-migrate.mjs sqlite",
+    "file:db:generate:pg": "node scripts/db-generate.mjs pg",
+    "file:db:migrate:pg": "node scripts/db-migrate.mjs pg",
+
+    "echo:hello": "echo Hello World I just exist to have the previous script have a comma"
   },
   "dependencies": {
     "@brakbricks/rebrickable-api": "^0.5.0",

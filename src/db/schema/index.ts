@@ -15,6 +15,8 @@ export const authAccount: typeof sqlite.authAccount | typeof pg.authAccount = sc
 export const authVerification: typeof sqlite.authVerification | typeof pg.authVerification = schema.authVerification;
 
 export const rebrickableSet: typeof sqlite.rebrickableSet | typeof pg.rebrickableSet = schema.rebrickableSet;
+export const bricksetPriceCache: typeof sqlite.bricksetPriceCache | typeof pg.bricksetPriceCache =
+	schema.bricksetPriceCache;
 export const legoList: typeof sqlite.legoList | typeof pg.legoList = schema.legoList;
 export const legoListSet: typeof sqlite.legoListSet | typeof pg.legoListSet = schema.legoListSet;
 export const legoListViewer: typeof sqlite.legoListViewer | typeof pg.legoListViewer = schema.legoListViewer;

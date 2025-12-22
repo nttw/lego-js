@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { authUser, legoList, legoListSet, legoListViewer } from "@/db/schema";
+import { authUser, bricksetPriceCache, legoList, legoListSet, legoListViewer } from "@/db/schema";
 import { bricksetClient } from "@/lib/brickset";
 import { requireSession } from "@/lib/session";
 import { and, eq } from "drizzle-orm";
@@ -122,10 +122,42 @@ export async function fetchSetRrpEurAction(
   const normalized = String(setNum ?? "").trim();
   if (!normalized) return { rrpEur: null };
 
+  const cached = await db
+    .select({ rrpEur: bricksetPriceCache.rrpEur })
+    .from(bricksetPriceCache)
+    .where(eq(bricksetPriceCache.setNum, normalized))
+    .limit(1);
+
+  const cachedValue = cached[0]?.rrpEur;
+  if (typeof cachedValue === "number") {
+    return { rrpEur: cachedValue };
+  }
+
   try {
     const client = bricksetClient();
     const set = await client.getSet(normalized);
     const rrpEur = set?.LEGOCom?.DE?.retailPrice;
+
+    if (typeof rrpEur === "number") {
+      const now = new Date();
+      await db
+        .insert(bricksetPriceCache)
+        .values({
+          setNum: normalized,
+          rrpEur,
+          lastFetchedAt: now,
+          rawJson: JSON.stringify(set),
+        })
+        .onConflictDoUpdate({
+          target: bricksetPriceCache.setNum,
+          set: {
+            rrpEur,
+            lastFetchedAt: now,
+            rawJson: JSON.stringify(set),
+          },
+        });
+    }
+
     return { rrpEur: typeof rrpEur === "number" ? rrpEur : null };
   } catch {
     return { rrpEur: null };

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import {
   authUser,
+  bricksetPriceCache,
   legoList,
   legoListSet,
   legoListViewer,
@@ -56,15 +57,18 @@ export default async function ListPage({
       name: rebrickableSet.name,
       year: rebrickableSet.year,
       imageUrl: rebrickableSet.imageUrl,
+      rrpEur: bricksetPriceCache.rrpEur,
     })
     .from(legoListSet)
     .leftJoin(rebrickableSet, eq(legoListSet.setNum, rebrickableSet.setNum))
+    .leftJoin(bricksetPriceCache, eq(legoListSet.setNum, bricksetPriceCache.setNum))
     .where(eq(legoListSet.listId, listId))
     .orderBy(legoListSet.addedAt)) as Array<{
     setNum: string;
     name: string | null;
     year: number | null;
     imageUrl: string | null;
+    rrpEur: number | null;
   }>;
 
   const viewers = isOwner
@@ -152,7 +156,7 @@ export default async function ListPage({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <SetPriceComponent listId={listId} setNum={s.setNum} />
+                  <SetPriceComponent listId={listId} setNum={s.setNum} initialRrpEur={s.rrpEur} />
                   {isOwner ? (
                     <form action={removeSetFromListAction.bind(null, listId, s.setNum)}>
                       <button
