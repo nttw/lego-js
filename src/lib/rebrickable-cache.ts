@@ -40,9 +40,9 @@ export async function searchAndCacheSets(query: string): Promise<RebrickableSet[
       set: {
         name: sql`excluded.name`,
         year: sql`excluded.year`,
-        imageUrl: sql`excluded.imageUrl`,
+        imageUrl: sql`excluded."imageUrl"`,
         lastFetchedAt: now,
-        rawJson: sql`excluded.rawJson`,
+        rawJson: sql`excluded."rawJson"`,
       },
     });
 

@@ -12,6 +12,11 @@ that are currently cached.
 	- Display the price alongside the set information when viewing sets in lists and search results.
 - [ ] Add a button to check and update prices for all sets if the cached price is older than a given threshold set to 30 days by default.
 
+- Users added by admin get name set as "admin" instead of their actual name; is this the name of the admin who created them? Hide or omit this, until approved to not be "admin" just hide.
+- There is name, username, and displayUsername. Ugh, this is when one goes vibe-coding HARD without looking at all output as one is prototyping. What to actually keep: What does BetterAuth need?
+- Add self-service for users, instead of just sign-out button in upper right, add a profile button that has dropdowns for "View Profile", "Edit Profile", "Sign Out", on "Edit Profile" page, allow changing display name, username, email, and password.
+- Add open to enabled sign up via email (instead of just manual user creation by admin only). Add option to enable this and enable option to have a whitelist of allowed email domains for sign up and add management page for this and as final option, do pending sign-ups and approve or deny them. Denial removes email. There is not verification email emails and will not be, there are no notifications via email.
+
 # Low-priority backlog
 
 - Make it possible to "assume" the identity of another user as an admin, so that the admin can see what that user sees. Add a button on the user management page for each user to "Assume identity", which when make the admin user view the lists and sets of that user, but allow the admin to return to their own identity easily so they are not locked out.
