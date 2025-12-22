@@ -19,6 +19,7 @@ import {
   renameListAction,
 } from "@/app/lists/[listId]/actions";
 import { buttonMd } from "@/app/_components/buttonStyles";
+import { SetPriceComponent } from "@/app/lists/[listId]/SetPriceComponent";
 
 export default async function ListPage({
   params,
@@ -150,16 +151,19 @@ export default async function ListPage({
                   </div>
                 </div>
 
-                {isOwner ? (
-                  <form action={removeSetFromListAction.bind(null, listId, s.setNum)}>
-                    <button
-                      type="submit"
-                      className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
-                    >
-                      Remove
-                    </button>
-                  </form>
-                ) : null}
+                <div className="flex items-center gap-2">
+                  <SetPriceComponent listId={listId} setNum={s.setNum} />
+                  {isOwner ? (
+                    <form action={removeSetFromListAction.bind(null, listId, s.setNum)}>
+                      <button
+                        type="submit"
+                        className="rounded-md border border-black/20 px-3 py-1 text-sm dark:border-white/15"
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  ) : null}
+                </div>
               </li>
             ))}
           </ul>

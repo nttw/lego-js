@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@brakbricks/rebrickable-api": "^0.5.0",
+    "@brakbricks/brickset-api": "^0.1.0",
     "@dotenvx/dotenvx": "^1.51.2",
     "better-auth": "^1.4.7",
     "better-sqlite3": "^12.5.0",

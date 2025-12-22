@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { authUser, legoList, legoListSet, legoListViewer } from "@/db/schema";
+import { bricksetClient } from "@/lib/brickset";
 import { requireSession } from "@/lib/session";
 import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
@@ -93,4 +94,40 @@ export async function removeViewerAction(listId: string, viewerUserId: string) {
     .where(and(eq(legoListViewer.listId, listId), eq(legoListViewer.viewerUserId, viewerUserId)));
 
   redirect(`/lists/${listId}`);
+}
+
+export async function fetchSetRrpEurAction(
+  listId: string,
+  setNum: string,
+): Promise<{ rrpEur: number | null }> {
+  const session = await requireSession();
+
+  const list = await db
+    .select({ ownerUserId: legoList.ownerUserId })
+    .from(legoList)
+    .where(eq(legoList.id, listId))
+    .limit(1);
+
+  const isOwner = list[0]?.ownerUserId === session.user.id;
+  if (!isOwner) {
+    const viewer = await db
+      .select({ listId: legoListViewer.listId })
+      .from(legoListViewer)
+      .where(and(eq(legoListViewer.listId, listId), eq(legoListViewer.viewerUserId, session.user.id)))
+      .limit(1);
+
+    if (!viewer[0]) throw new Error("Not authorized");
+  }
+
+  const normalized = String(setNum ?? "").trim();
+  if (!normalized) return { rrpEur: null };
+
+  try {
+    const client = bricksetClient();
+    const set = await client.getSet(normalized);
+    const rrpEur = set?.LEGOCom?.DE?.retailPrice;
+    return { rrpEur: typeof rrpEur === "number" ? rrpEur : null };
+  } catch {
+    return { rrpEur: null };
+  }
 }
