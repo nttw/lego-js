@@ -5,7 +5,7 @@ import { admin, username } from "better-auth/plugins";
 
 import { db } from "@/db";
 import { dbDialect } from "@/db";
-import { getRequiredEnv } from "@/lib/env";
+import { getEnv, getRequiredEnv } from "@/lib/env";
 import {
   authAccount,
   authSession,
@@ -14,15 +14,25 @@ import {
 } from "@/db/schema";
 import { sql } from "drizzle-orm";
 
+const inferredBaseUrlFromVercel = (() => {
+  const vercelUrl = getEnv("VERCEL_URL");
+  if (!vercelUrl) return undefined;
+  // Vercel provides a hostname without scheme.
+  return `https://${vercelUrl}`;
+})();
+
 export const auth = betterAuth({
   secret: getRequiredEnv("BETTER_AUTH_SECRET", {
     allowDuringBuild: true,
     buildFallback: "__BUILD_TIME_SECRET__0123456789012345678901234567__",
   }),
-  baseURL: getRequiredEnv("BETTER_AUTH_URL", {
-    allowDuringBuild: true,
-    buildFallback: "http://localhost:3000",
-  }),
+  baseURL:
+    getEnv("BETTER_AUTH_URL") ??
+    inferredBaseUrlFromVercel ??
+    getRequiredEnv("BETTER_AUTH_URL", {
+      allowDuringBuild: true,
+      buildFallback: "http://localhost:3000",
+    }),
   emailAndPassword: {
     enabled: true,
   },

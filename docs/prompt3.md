@@ -1,7 +1,5 @@
 # Feature backlog
 
-- We have a DB backend for both SQLite and Postgres. When deploying, it is cumbersome to have to manually run the initial migration. So it would be good to have the initial migration run automatically on first start if the database is empty. This can be tested locally with docker, so I have prepared a testing configuration with PG_DATABASE_URL=postgresql://postgresql:localhost:5432/postgres?sslmode=false so can test this when we implement this feature. As you can see, this is safe because it only connects to a local database and does not need a password, only user. It seems this action could best be done in createDb in db/index.ts, but you should make sure if this is the best place. There is a uncommented migrateDb function close which you could use as base. The createDb function is typed as any, which you may want to fix and then use the migrate function you find there. You need to use the directory for sqlite and postgres respectively, so this would work for both backends. Make sure to test both backends locally with docker for Postgres and the default sqlite file for sqlite. Document how this works in the README.md as needed.
-
 - [ ] Add a "Sets" page that shows all Lego sets the user has added to any of their lists, grouped by list.
 - [ ] For admins, add a page that shows all sets
 that are currently cached.
@@ -17,3 +15,6 @@ that are currently cached.
 # Low-priority backlog
 
 - Make it possible to "assume" the identity of another user as an admin, so that the admin can see what that user sees. Add a button on the user management page for each user to "Assume identity", which when make the admin user view the lists and sets of that user, but allow the admin to return to their own identity easily so they are not locked out.
+
+- On *Vercel* deploy with Neon postgresql instance (not sqlite or local docker postgresql!), the first initial user that signs in does not become admin automatically. This seems like a bug.
+- look into automatically adding key for dotenvx with command for first time deploy on Vercel
