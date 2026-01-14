@@ -44,12 +44,13 @@ export const auth = betterAuth({
             .select({ count: sql<number>`count(*)` })
             .from(authUser);
           const isFirstUser = (rows[0]?.count ?? 0) === 0;
-          const requestedRole = (user as unknown as { role?: string }).role;
 
           return {
             data: {
               ...user,
-              role: isFirstUser ? "admin" : requestedRole ?? "user",
+              // SECURITY: never accept a role supplied at signup time.
+              // Admins can still promote users via the admin UI/actions.
+              role: isFirstUser ? "admin" : "user",
             },
           };
         },

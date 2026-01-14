@@ -49,3 +49,13 @@ that are currently cached.
 - Consider adding github to push backups of code
 - Add testing framework
 - Figure out how tests can be created to cover nextjs server and client side code; integration tests with spinning up testcontainers?
+
+# Future tasks
+
+For now, "self-service" for users are disabled to my knowledge, if you go to any page not logged in, you can only log in, the exception is if you are the first user to get promoted to admin; the only public page had been env so I could check when deployed if logging in and registry would work when deployed.
+
+The usage of emails is disabled for now, so an admin manually adds users. Later I will add a system so a user can be added by requesting approval from an admin, who receives a request queue to approve or reject.
+
+I will later add alternatives such as setting the initial password for a user from an env var and calling an endpoint with the username for an admin with that password, so this can be changed later.
+
+As for writing to foreign lists, for now you can grant viewing a list, but writing by granting this from user A to user B is for the future.

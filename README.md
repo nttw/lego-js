@@ -14,6 +14,25 @@ Backend selection is centralized in [src/db/runtime.ts](src/db/runtime.ts). Duri
 - `PG_DATABASE_URL` (preferred when set): standard Postgres connection string, e.g. `postgres://user:pass@host:5432/dbname`
 - `DATABASE_URL` (SQLite): `file:./data/lego.sqlite`
 
+### Security + diagnostics toggles
+
+This app intentionally runs with **no public registration UI**. However, auth endpoints still exist under `/api/auth/*` (Better Auth).
+To keep deployments safe by default, the app gates certain behaviors behind env flags.
+
+- `ALLOW_PUBLIC_SIGNUP` (default: disabled)
+	- When unset/falsey, requests to auth *sign-up* endpoints return `404` once the DB has any users.
+	- Bootstrap still works when the database is empty (the first user can be created).
+	- Set to `1`/`true`/`yes` to temporarily enable public signup endpoints.
+
+- `ALLOW_PUBLIC_DIAGNOSTICS` (default: disabled)
+	- When unset/falsey, `/env` is admin-only.
+	- Set to `1`/`true`/`yes` to make `/env` publicly accessible as a deployment sanity check.
+
+Notes:
+
+- Env values are loaded via `process.env` and (optionally) `dotenvx` based on `NODE_ENV` (see [src/lib/env.ts](src/lib/env.ts)).
+- Prefer enabling these only briefly during first deploy / recovery, then disabling.
+
 Optional override:
 
 - `DB_DIALECT`: force the backend selection when both URLs are present (or to force one backend).

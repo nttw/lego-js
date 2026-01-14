@@ -1,8 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { authUser } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -23,7 +26,9 @@ async function requireAdmin() {
 export async function createUserAction(formData: FormData) {
   await requireAdmin();
 
-  const username = String(formData.get("username") ?? "").trim();
+  const username = String(formData.get("username") ?? "")
+    .trim()
+    .toLowerCase();
   const name = String(formData.get("name") ?? "").trim() || username;
   const password = String(formData.get("password") ?? "");
   const role = parseRole(formData.get("role"));
@@ -35,7 +40,6 @@ export async function createUserAction(formData: FormData) {
       email: usernameToEmail(username),
       password,
       name,
-      role,
       data: {
         username,
         displayUsername: username,
@@ -43,6 +47,24 @@ export async function createUserAction(formData: FormData) {
     },
     headers: await headers(),
   });
+
+  // SECURITY: role assignment is intentionally decoupled from user creation.
+  // If the admin requested an admin user, promote the user explicitly via the admin API.
+  if (role === "admin") {
+    const created = (await db
+      .select({ id: authUser.id })
+      .from(authUser)
+      .where(eq(authUser.username, username))
+      .limit(1)) as Array<{ id: string }>;
+
+    const userId = created[0]?.id;
+    if (userId) {
+      await auth.api.setRole({
+        body: { userId, role: "admin" },
+        headers: await headers(),
+      });
+    }
+  }
 
   redirect("/admin/users");
 }

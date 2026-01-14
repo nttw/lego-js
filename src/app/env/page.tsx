@@ -1,9 +1,21 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { getEnv } from "@/lib/env";
 import { getDbDialect } from "@/db/runtime";
+import { requireSession } from "@/lib/session";
+import { isAdminRole } from "@/lib/roles";
 
 export default async function EnvPage() {
+  const publicDiagnostics = ["1", "true", "yes"].includes(
+    String(getEnv("ALLOW_PUBLIC_DIAGNOSTICS") ?? "").trim().toLowerCase(),
+  );
+
+  if (!publicDiagnostics) {
+    const session = await requireSession();
+    if (!isAdminRole(session.user.role)) redirect("/dashboard");
+  }
+
   const hello = getEnv("HELLO");
   const dbDialect = getDbDialect();
   const dbDialectEnv = getEnv("DB_DIALECT");
