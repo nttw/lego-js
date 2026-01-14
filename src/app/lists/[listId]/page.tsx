@@ -13,6 +13,7 @@ import {
 import { requireSession } from "@/lib/session";
 import { and, eq } from "drizzle-orm";
 import Link from "next/link";
+import { searchAndCacheSets } from "@/lib/rebrickable-cache";
 import {
   addViewerAction,
   removeSetFromListAction,
@@ -70,6 +71,41 @@ export default async function ListPage({
     imageUrl: string | null;
     rrpEur: number | null;
   }>;
+
+  // Best-effort refresh missing cached set data (incl. image URL) using existing caching logic.
+  // This keeps behavior consistent and allows the admin cache view to clear images without
+  // permanently breaking list pages.
+  const toRefresh = Array.from(
+    new Set(sets.filter((s) => !s.name || typeof s.year !== "number" || !s.imageUrl).map((s) => s.setNum)),
+  ).slice(0, 5);
+
+  if (toRefresh.length > 0) {
+    await Promise.all(
+      toRefresh.map(async (setNum) => {
+        try {
+          await searchAndCacheSets(setNum);
+        } catch {
+          // Ignore refresh failures; page will render with placeholders.
+        }
+      }),
+    );
+
+    const refreshed = (await db
+      .select({
+        setNum: legoListSet.setNum,
+        name: rebrickableSet.name,
+        year: rebrickableSet.year,
+        imageUrl: rebrickableSet.imageUrl,
+        rrpEur: bricksetPriceCache.rrpEur,
+      })
+      .from(legoListSet)
+      .leftJoin(rebrickableSet, eq(legoListSet.setNum, rebrickableSet.setNum))
+      .leftJoin(bricksetPriceCache, eq(legoListSet.setNum, bricksetPriceCache.setNum))
+      .where(eq(legoListSet.listId, listId))
+      .orderBy(legoListSet.addedAt)) as typeof sets;
+
+    sets.splice(0, sets.length, ...refreshed);
+  }
 
   const viewers = isOwner
     ? ((await db

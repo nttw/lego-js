@@ -26,9 +26,14 @@ export async function TopNav() {
                 Search
               </Link>
               {isAdminRole(session.user.role) ? (
-                <Link href="/admin/users" className="hover:underline">
-                  Users
-                </Link>
+                <>
+                  <Link href="/admin/cache" className="hover:underline">
+                    Cache
+                  </Link>
+                  <Link href="/admin/users" className="hover:underline">
+                    Users
+                  </Link>
+                </>
               ) : null}
             </nav>
           ) : null}
