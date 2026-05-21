@@ -1,4 +1,5 @@
 {
+	"specstory.cloudSync.enabled": "ask"  // always
 	// "workbench.colorTheme": "Dracula Pro",
 	// "workbench.colorTheme": "Dracula Theme Soft",
 }
