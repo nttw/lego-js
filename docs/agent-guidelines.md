@@ -5,6 +5,9 @@ These guidelines are advisory and still WIP. Use judgment, but treat them as pro
 ## Git and Completion Discipline
 
 - The user usually handles commits. Do not commit unless explicitly asked, or unless a deploy/tooling flow truly requires it and you have explained why first.
+- Do not change `git user.name` or `git user.email`. This repo intentionally uses `git <git@localhost>`; real account email addresses must not appear in commit authors, committers, patches, logs, PR text, or deployment notes.
+- Before committing, check `git config --get user.name` and `git config --get user.email`. If they are not `git` and `git@localhost`, stop and ask the user instead of committing.
+- If commit identity must be repaired, preserve original author and committer timestamps while rewriting the identity to `git <git@localhost>`.
 - Never commit known-broken work as a completion commit.
 - Before committing, verify the work appropriate to the change: at minimum run the relevant audit/lint/build/test/deploy checks, or clearly state what could not be verified.
 - If deployment is part of the task, do not treat "deployment command returned a URL" as success. Verify the live URL responds correctly.
