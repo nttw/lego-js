@@ -33,14 +33,10 @@ verify:
   pnpm build
 
 deploy-preview:
-  vercel pull --yes --environment=preview
-  vercel build
-  vercel deploy --prebuilt --yes --archive=tgz --no-wait
+  vercel deploy --yes
 
 deploy:
-  vercel pull --yes --environment=production
-  vercel build --prod
-  vercel deploy --prebuilt --prod --yes --archive=tgz --no-wait
+  vercel deploy --prod --yes
 
 deploy-prod: deploy
 

@@ -41,8 +41,6 @@ export function getEnv(name: string): string | undefined {
     return fromProcess;
   }
 
-  if (isBuildTime()) return undefined;
-
   // Missing from process.env: attempt to load from encrypted env files.
   ensureDotenvxLoaded();
   const afterLoad = process.env[name];
