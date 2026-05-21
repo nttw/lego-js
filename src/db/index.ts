@@ -73,7 +73,7 @@ type DbInternal = SqliteDb | PgDb;
 
 function getMigrationsFolder(): string {
   const rel = dbDialect === "pg" ? "drizzle/pg" : "drizzle";
-  return path.resolve(process.cwd(), rel);
+  return path.resolve(/*turbopackIgnore: true*/ process.cwd(), rel);
 }
 
 async function isDbEmpty(): Promise<boolean> {

@@ -13,51 +13,52 @@
     "lint": "eslint",
     "pretty": "prettier --write .",
     "clean": "rimraf node_modules .next dist",
-
     "db:generate:sqlite": "dotenvx run -- drizzle-kit generate",
     "db:migrate:sqlite": "dotenvx run -- drizzle-kit migrate",
     "db:generate:pg": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit generate",
     "db:migrate:pg": "dotenvx run -f .env.dev -f .env.staging --overload --verbose -- drizzle-kit migrate",
     "db:generate:neon": "dotenvx run -f .env.prod --overload --verbose -- drizzle-kit generate",
     "db:migrate:neon": "dotenvx run -f .env.prod --overload --verbose -- drizzle-kit migrate",
-
     "db:migrate": "node scripts/db-guard.mjs migrate",
     "db:generate": "node scripts/db-guard.mjs generate",
-
     "file:db:generate:sqlite": "node scripts/db-generate.mjs sqlite",
     "file:db:migrate:sqlite": "node scripts/db-migrate.mjs sqlite",
     "file:db:generate:pg": "node scripts/db-generate.mjs pg",
     "file:db:migrate:pg": "node scripts/db-migrate.mjs pg",
-
     "echo:hello": "echo Hello World I just exist to have the previous script have a comma"
   },
   "dependencies": {
-    "@brakbricks/rebrickable-api": "^0.5.0",
     "@brakbricks/brickset-api": "^0.1.0",
-    "@dotenvx/dotenvx": "^1.51.2",
-    "better-auth": "^1.4.7",
-    "better-sqlite3": "^12.5.0",
-    "drizzle-orm": "^0.41.0",
-    "next": "16.1.0",
-    "pg": "^8.16.3",
+    "@brakbricks/rebrickable-api": "^0.5.0",
+    "@dotenvx/dotenvx": "^1.66.0",
+    "better-auth": "^1.6.11",
+    "better-sqlite3": "^12.10.0",
+    "drizzle-orm": "^0.45.2",
+    "next": "16.2.6",
+    "pg": "^8.21.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@better-auth/cli": "^1.4.7",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^20",
-    "@types/pg": "^8.15.5",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^20.19.41",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "drizzle-kit": "^0.31.8",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.0",
-    "prettier": "^3.7.4",
-    "rimraf": "^6.0.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.2.6",
+    "prettier": "^3.8.3",
+    "rimraf": "^6.1.3",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": ">=0.25.0",
+      "postcss": ">=8.5.10"
+    }
   }
 }
