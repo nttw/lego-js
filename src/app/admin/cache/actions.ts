@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { rebrickableSet } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
@@ -15,6 +15,7 @@ async function requireAdmin() {
 
 export async function deleteCachedSetImageAction(setNum: string) {
   await requireAdmin();
+  const db = await getDb();
   const normalized = String(setNum ?? "").trim();
   if (!normalized) redirect("/admin/cache");
 

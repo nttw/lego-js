@@ -7,6 +7,9 @@ This app supports **two** database backends via Drizzle:
 - **Postgres** when `PG_DATABASE_URL` is set
 - **SQLite** otherwise (using `DATABASE_URL`, defaulting to `file:./data/lego.sqlite`)
 
+The parallel Cloudflare D1 and Hyperdrive deployments, including their secret and migration model,
+are documented in [docs/cloudflare-deployments.md](docs/cloudflare-deployments.md).
+
 Backend selection is centralized in [src/db/runtime.ts](src/db/runtime.ts). During `next build`, the app forces an in-memory SQLite database to avoid build-time DB connectivity issues.
 
 ### Environment variables

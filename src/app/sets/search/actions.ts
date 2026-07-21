@@ -1,12 +1,13 @@
 "use server";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { legoList, legoListSet } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { and, eq, inArray } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export async function addSetToListsAction(formData: FormData) {
+  const db = await getDb();
   const session = await requireSession();
   const setNum = String(formData.get("setNum") ?? "").trim();
   const q = String(formData.get("q") ?? "").trim();

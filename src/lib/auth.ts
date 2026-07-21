@@ -2,9 +2,10 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, username } from "better-auth/plugins";
+import { cache } from "react";
 
-import { db } from "@/db";
-import { dbDialect } from "@/db";
+import { getDb } from "@/db";
+import { getDbDialect } from "@/db/runtime";
 import { getEnv, getRequiredEnv } from "@/lib/env";
 import {
   authAccount,
@@ -21,57 +22,60 @@ const inferredBaseUrlFromVercel = (() => {
   return `https://${vercelUrl}`;
 })();
 
-export const auth = betterAuth({
-  secret: getRequiredEnv("BETTER_AUTH_SECRET", {
-    allowDuringBuild: true,
-    buildFallback: "__BUILD_TIME_SECRET__0123456789012345678901234567__",
-  }),
-  baseURL:
-    getEnv("BETTER_AUTH_URL") ??
-    inferredBaseUrlFromVercel ??
-    getRequiredEnv("BETTER_AUTH_URL", {
-      allowDuringBuild: true,
-      buildFallback: "http://localhost:3000",
-    }),
-  emailAndPassword: {
-    enabled: true,
-  },
-  databaseHooks: {
-    user: {
-      create: {
-        before: async (user) => {
-          const rows = await db
-            .select({ count: sql<number>`count(*)` })
-            .from(authUser);
-          const isFirstUser = (rows[0]?.count ?? 0) === 0;
+export const getAuth = cache(async () => {
+  const db = await getDb();
+  const dbDialect = getDbDialect();
 
-          return {
-            data: {
-              ...user,
-              // SECURITY: never accept a role supplied at signup time.
-              // Admins can still promote users via the admin UI/actions.
-              role: isFirstUser ? "admin" : "user",
-            },
-          };
+  return betterAuth({
+    secret: getRequiredEnv("BETTER_AUTH_SECRET", {
+      allowDuringBuild: true,
+      buildFallback: "__BUILD_TIME_SECRET__0123456789012345678901234567__",
+    }),
+    baseURL:
+      getEnv("BETTER_AUTH_URL") ??
+      inferredBaseUrlFromVercel ??
+      getRequiredEnv("BETTER_AUTH_URL", {
+        allowDuringBuild: true,
+        buildFallback: "http://localhost:3000",
+      }),
+    emailAndPassword: {
+      enabled: true,
+    },
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (user) => {
+            const rows = await db.select({ count: sql<number>`count(*)` }).from(authUser);
+            const isFirstUser = (rows[0]?.count ?? 0) === 0;
+
+            return {
+              data: {
+                ...user,
+                // SECURITY: never accept a role supplied at signup time.
+                // Admins can still promote users via the admin UI/actions.
+                role: isFirstUser ? "admin" : "user",
+              },
+            };
+          },
         },
       },
     },
-  },
-  database: drizzleAdapter(db, {
-    provider: dbDialect === "pg" ? "pg" : "sqlite",
-    // Better Auth expects schema keys like "user"/"session"/...; our Drizzle exports
-    // are named authUser/authSession/etc, so we map them explicitly.
-    schema: {
-      user: authUser,
-      session: authSession,
-      account: authAccount,
-      verification: authVerification,
-    },
-  }),
-  plugins: [
-    admin(),
-    username(),
-    // Must be last to allow server actions to set cookies.
-    nextCookies(),
-  ],
+    database: drizzleAdapter(db, {
+      provider: dbDialect === "pg" ? "pg" : "sqlite",
+      // Better Auth expects schema keys like "user"/"session"/...; our Drizzle exports
+      // are named authUser/authSession/etc, so we map them explicitly.
+      schema: {
+        user: authUser,
+        session: authSession,
+        account: authAccount,
+        verification: authVerification,
+      },
+    }),
+    plugins: [
+      admin(),
+      username(),
+      // Must be last to allow server actions to set cookies.
+      nextCookies(),
+    ],
+  });
 });

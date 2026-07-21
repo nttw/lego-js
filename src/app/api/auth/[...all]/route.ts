@@ -1,14 +1,13 @@
 import { sql } from "drizzle-orm";
 import { toNextJsHandler } from "better-auth/next-js";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { authUser } from "@/db/schema";
 import { getEnv } from "@/lib/env";
-import { auth } from "@/lib/auth";
-
-const handler = toNextJsHandler(auth);
+import { getAuth } from "@/lib/auth";
 
 async function hasAnyUsers(): Promise<boolean> {
+	const db = await getDb();
 	const rows = await db.select({ count: sql<number>`count(*)` }).from(authUser);
 	return (rows[0]?.count ?? 0) > 0;
 }
@@ -29,6 +28,7 @@ export async function GET(request: Request) {
 	if (isSignupRequest(request) && !allowPublicSignup() && (await hasAnyUsers())) {
 		return new Response("Not Found", { status: 404 });
 	}
+  const handler = toNextJsHandler(await getAuth());
   /* the ignore below had a warning with @, so I removed it for now */
 	// ts-expect-error - handler typing is looser than Next's Request type.
 	return handler.GET(request);
@@ -38,6 +38,7 @@ export async function POST(request: Request) {
 	if (isSignupRequest(request) && !allowPublicSignup() && (await hasAnyUsers())) {
 		return new Response("Not Found", { status: 404 });
 	}
+  const handler = toNextJsHandler(await getAuth());
   /* the ignore below had a warning with @, so I removed it for now */
 	// ts-expect-error - handler typing is looser than Next's Request type.
 	return handler.POST(request);

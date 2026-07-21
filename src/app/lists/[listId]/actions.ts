@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { authUser, bricksetPriceCache, legoList, legoListSet, legoListViewer } from "@/db/schema";
 import { bricksetClient } from "@/lib/brickset";
 import { requireSession } from "@/lib/session";
@@ -8,6 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export async function renameListAction(listId: string, formData: FormData) {
+  const db = await getDb();
   const session = await requireSession();
   const name = String(formData.get("name") ?? "").trim();
   if (!name) redirect(`/lists/${listId}`);
@@ -29,6 +30,7 @@ export async function renameListAction(listId: string, formData: FormData) {
 }
 
 export async function removeSetFromListAction(listId: string, setNum: string) {
+  const db = await getDb();
   const session = await requireSession();
 
   const list = await db
@@ -47,6 +49,7 @@ export async function removeSetFromListAction(listId: string, setNum: string) {
 }
 
 export async function addViewerAction(listId: string, formData: FormData) {
+  const db = await getDb();
   const session = await requireSession();
   const username = String(formData.get("username") ?? "").trim().toLowerCase();
   if (!username) redirect(`/lists/${listId}`);
@@ -79,6 +82,7 @@ export async function addViewerAction(listId: string, formData: FormData) {
 }
 
 export async function removeViewerAction(listId: string, viewerUserId: string) {
+  const db = await getDb();
   const session = await requireSession();
 
   const list = await db
@@ -100,6 +104,7 @@ export async function fetchSetRrpEurAction(
   listId: string,
   setNum: string,
 ): Promise<{ rrpEur: number | null }> {
+  const db = await getDb();
   const session = await requireSession();
 
   const list = await db

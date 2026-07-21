@@ -1,8 +1,8 @@
 "use server";
 
 import { sql } from "drizzle-orm";
-import { auth } from "@/lib/auth";
-import { db } from "@/db";
+import { getAuth } from "@/lib/auth";
+import { getDb } from "@/db";
 import { authUser } from "@/db/schema";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,6 +12,7 @@ function usernameToEmail(username: string) {
 }
 
 async function hasAnyUsers() {
+  const db = await getDb();
   const rows = await db.select({ count: sql<number>`count(*)` }).from(authUser);
   return (rows[0]?.count ?? 0) > 0;
 }
@@ -36,6 +37,7 @@ async function getAuthErrorMessage(error: unknown): Promise<string> {
 }
 
 export async function loginAction(prevState: { error?: string } | undefined, formData: FormData) {
+  const auth = await getAuth();
   const username = String(formData.get("username") ?? "")
     .trim()
     .toLowerCase();

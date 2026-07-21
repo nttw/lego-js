@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { rebrickableSet } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
 import { deleteCachedSetImageAction } from "@/app/admin/cache/actions";
 
 export default async function AdminCachePage() {
+  const db = await getDb();
   const session = await requireSession();
   if (!isAdminRole(session.user.role)) redirect("/dashboard");
 

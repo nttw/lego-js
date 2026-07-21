@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { db } from "@/db";
+import { getAuth } from "@/lib/auth";
+import { getDb } from "@/db";
 import { authUser } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
@@ -25,6 +25,8 @@ async function requireAdmin() {
 
 export async function createUserAction(formData: FormData) {
   await requireAdmin();
+  const auth = await getAuth();
+  const db = await getDb();
 
   const username = String(formData.get("username") ?? "")
     .trim()
@@ -71,6 +73,7 @@ export async function createUserAction(formData: FormData) {
 
 export async function setRoleAction(userId: string, formData: FormData) {
   await requireAdmin();
+  const auth = await getAuth();
   const role = parseRole(formData.get("role"));
 
   await auth.api.setRole({
@@ -83,6 +86,7 @@ export async function setRoleAction(userId: string, formData: FormData) {
 
 export async function setPasswordAction(userId: string, formData: FormData) {
   await requireAdmin();
+  const auth = await getAuth();
   const newPassword = String(formData.get("newPassword") ?? "");
   if (!newPassword) redirect("/admin/users");
 
@@ -96,6 +100,7 @@ export async function setPasswordAction(userId: string, formData: FormData) {
 
 export async function updateNameAction(userId: string, formData: FormData) {
   await requireAdmin();
+  const auth = await getAuth();
   const name = String(formData.get("name") ?? "").trim();
   if (!name) redirect("/admin/users");
 
@@ -112,6 +117,7 @@ export async function updateNameAction(userId: string, formData: FormData) {
 
 export async function deleteUserAction(userId: string) {
   await requireAdmin();
+  const auth = await getAuth();
 
   await auth.api.removeUser({
     body: { userId },

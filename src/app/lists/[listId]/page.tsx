@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import {
   authUser,
   bricksetPriceCache,
@@ -28,6 +28,7 @@ export default async function ListPage({
 }: {
   params: Promise<{ listId: string }>;
 }) {
+  const db = await getDb();
   const session = await requireSession();
   const { listId } = await params;
 

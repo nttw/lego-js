@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { legoList, legoListViewer } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { eq } from "drizzle-orm";
@@ -8,6 +8,7 @@ import { createListAction } from "@/app/dashboard/actions";
 import { buttonMd } from "@/app/_components/buttonStyles";
 
 export default async function DashboardPage() {
+  const db = await getDb();
   const session = await requireSession();
 
   const ownedLists = (await db

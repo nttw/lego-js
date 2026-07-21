@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { requireSession } from "@/lib/session";
 import { isAdminRole } from "@/lib/roles";
 import { buttonMd, buttonSm } from "@/app/_components/buttonStyles";
@@ -35,6 +35,7 @@ function toHeaderRecord(h: Awaited<ReturnType<typeof headers>>): Record<string, 
 }
 
 export default async function AdminUsersPage() {
+  const auth = await getAuth();
   const session = await requireSession();
   if (!isAdminRole(session.user.role)) redirect("/dashboard");
 

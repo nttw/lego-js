@@ -1,0 +1,45 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lego-js-cloudflare",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-21",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "images": {
+    "binding": "IMAGES",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "env": {
+    "d1": {
+      "name": "lego-js-cloudflare-d1",
+      "preview_urls": false,
+      "images": {
+        "binding": "IMAGES",
+      },
+      "vars": {
+        "CLOUDFLARE_DB_BACKEND": "d1",
+        "DB_DIALECT": "SQLITE",
+        "BETTER_AUTH_URL": "https://lego-js-cloudflare-d1.nttw.workers.dev",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "lego-js-cloudflare-d1",
+          "database_id": "a6655df5-31be-4ce9-aaf6-6a0aacd11b7b",
+          "migrations_dir": "drizzle",
+        },
+      ],
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "lego-js-cloudflare-d1",
+        },
+      ],
+    },
+  },
+}

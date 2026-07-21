@@ -1,9 +1,17 @@
 import { getEnv, getRequiredEnv } from "../lib/env";
 
 export type DbDialect = "sqlite" | "pg";
+export type CloudflareDbBackend = "d1";
 
 export function isNextBuildPhase() {
   return getEnv("NEXT_PHASE") === "phase-production-build";
+}
+
+export function getCloudflareDbBackend(): CloudflareDbBackend | undefined {
+  if (isNextBuildPhase()) return undefined;
+  const value = getEnv("CLOUDFLARE_DB_BACKEND")?.trim().toLowerCase();
+  if (value === "d1") return value;
+  return undefined;
 }
 
 function normalizeDbDialect(value: string | undefined): DbDialect | undefined {

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { legoList } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { eq } from "drizzle-orm";
@@ -14,6 +14,7 @@ export default async function SearchSetsPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  const db = await getDb();
   const session = await requireSession();
   const { q } = await searchParams;
   const query = (q ?? "").trim();

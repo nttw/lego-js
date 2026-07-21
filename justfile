@@ -40,5 +40,20 @@ deploy:
 
 deploy-prod: deploy
 
+cf-build-d1:
+  pnpm cf:build:d1
+
+cf-migrate-d1:
+  pnpm cf:migrate:d1
+
+cf-secret-d1:
+  pnpm cf:secret:d1
+
+cf-deploy-d1:
+  pnpm cf:build:d1
+  pnpm cf:migrate:d1
+  pnpm cf:deploy:d1
+  pnpm cf:secret:d1
+
 clean:
-  rm node_modules/*, .next/* -Recurse -Force
+  $artifactPaths = @("node_modules", ".next", ".open-next", "dist"); foreach ($artifactPath in $artifactPaths) { if (Test-Path -LiteralPath $artifactPath) { Remove-Item -LiteralPath $artifactPath -Recurse -Force } }

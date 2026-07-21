@@ -1,0 +1,3 @@
+# Static assets are content-hashed by Next.js.
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable

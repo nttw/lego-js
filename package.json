@@ -9,6 +9,10 @@
     "build": "dotenvx run -f .env.prod -f .env.prod.local --ignore=MISSING_ENV_FILE -- next build",
     "start": "dotenvx run -f .env.prod --ignore=MISSING_ENV_FILE -- next start",
     "deploy": "pnpm dlx vercel@latest deploy --prod",
+    "cf:build:d1": "dotenvx run --quiet -f .env.keys -- opennextjs-cloudflare build --env d1",
+    "cf:migrate:d1": "wrangler d1 migrations apply DB --remote --env d1",
+    "cf:secret:d1": "dotenvx run --quiet -f .env.keys -- node scripts/cloudflare-secret.mjs d1",
+    "cf:deploy:d1": "opennextjs-cloudflare deploy --env d1",
     "_deploy:dotenvx": "pnpm dlx vercel@latest env add DOTENV_PRIVATE_KEY_PRODUCTION",
     "lint": "eslint",
     "pretty": "prettier --write .",
@@ -31,15 +35,18 @@
     "@brakbricks/brickset-api": "^0.1.0",
     "@brakbricks/rebrickable-api": "^0.5.0",
     "@dotenvx/dotenvx": "^1.66.0",
-    "better-auth": "^1.6.11",
+    "better-auth": "^1.6.23",
     "better-sqlite3": "^12.10.0",
     "drizzle-orm": "^0.45.2",
-    "next": "16.2.6",
+    "next": "16.2.11",
     "pg": "^8.21.0",
+    "pg-cloudflare": "^1.4.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20260721.1",
+    "@opennextjs/cloudflare": "1.20.2",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.41",
@@ -49,11 +56,12 @@
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "16.2.11",
     "prettier": "^3.8.3",
     "rimraf": "^6.1.3",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "4.112.0"
   },
   "pnpm": {
     "overrides": {

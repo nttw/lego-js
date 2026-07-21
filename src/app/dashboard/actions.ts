@@ -1,12 +1,13 @@
 "use server";
 
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { legoList } from "@/db/schema";
 import { requireSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import crypto from "node:crypto";
 
 export async function createListAction(formData: FormData) {
+  const db = await getDb();
   const session = await requireSession();
   const name = String(formData.get("name") ?? "").trim();
   if (!name) redirect("/dashboard");

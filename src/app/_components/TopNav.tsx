@@ -3,11 +3,12 @@ import Link from "next/link";
 import { signOutAction } from "@/app/actions/auth";
 import { buttonSm } from "@/app/_components/buttonStyles";
 import { ThemeToggle } from "@/app/_components/ThemeToggle";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { isAdminRole } from "@/lib/roles";
 import { headers } from "next/headers";
 
 export async function TopNav() {
+  const auth = await getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
 
   return (
