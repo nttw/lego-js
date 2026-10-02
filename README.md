@@ -146,3 +146,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 Use pnpm 11.9.0 (the packageManager field) and Node >=24.11.0. Local Node 26 is allowed; Vercel production uses its supported Node 24 runtime. pnpm overrides and native build permissions live in pnpm-workspace.yaml. Commit that file with the lockfile, and use frozen installs for reproducibility.
 
 The dependency refresh passed a complete pnpm audit with no known vulnerabilities, lint/type checks and a production build under Node 24. The existing application/database configuration and schemas are preserved. Clean installed dependencies and build output with just clean after verification.
+
+Vercel deployment uses a hoisted dependency layout to avoid symlinked files in serverless function packages. When the placeholder Git identity cannot be mapped to Vercel, deploy an export of committed sources with sourceCommit metadata using the authenticated owner account.

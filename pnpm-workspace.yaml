@@ -1,3 +1,5 @@
+# Flat dependency layout avoids symlinked function packages on Vercel.
+nodeLinker: hoisted
 packages:
   - '.'
 allowBuilds:
