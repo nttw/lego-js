@@ -140,3 +140,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Dependency maintenance (2026-10-02)
+
+Use pnpm 11.9.0 (the packageManager field) and Node >=24.11.0. Local Node 26 is allowed; Vercel production uses its supported Node 24 runtime. pnpm overrides and native build permissions live in pnpm-workspace.yaml. Commit that file with the lockfile, and use frozen installs for reproducibility.
+
+The dependency refresh passed a complete pnpm audit with no known vulnerabilities, lint/type checks and a production build under Node 24. The existing application/database configuration and schemas are preserved. Clean installed dependencies and build output with just clean after verification.
